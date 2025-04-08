@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Absensi Guru - SMK N 3 Kejuruan Muda</title>
+    <!-- Bootstrap CSS (Updated to 5.3.2) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.css" rel="stylesheet">
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --info-color: #3498db;
+            
+            /* Dark Mode Variables */
+            --dark-bg: #1a1a1a;
+            --dark-card: #2d2d2d;
+            --dark-text: #f0f0f0;
+            --dark-border: #444;
+            --dark-hover: #3a3a3a;
+
+            --transition-speed: 0.3s;
+        }
+        
+        [data-bs-theme="dark"] {
+            --bs-body-color: var(--dark-text);
+            --bs-body-bg: var(--dark-bg);
+            --bs-border-color: var(--dark-border);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            transition: background-color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] body {
+            background-color: var(--dark-bg);
+        }
+        
+        .navbar {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .navbar {
+            background-color: var(--dark-card);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .sidebar {
+            background-color: var(--primary-color);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            padding-top: 70px;
+            z-index: 99;
+            transition: all var(--transition-speed);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+        
+        [data-bs-theme="dark"] .sidebar {
+            background-color: var(--dark-card);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 90px 20px 20px;
+            transition: all var(--transition-speed);
+        }
+        
+        .sidebar-link {
+            color: white;
+            padding: 12px 20px;
+            display: block;
+            transition: all var(--transition-speed);
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: var(--dark-color);
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        [data-bs-theme="dark"] .sidebar-link:hover, 
+        [data-bs-theme="dark"] .sidebar-link.active {
+            background-color: var(--dark-hover);
+        }
+        
+        .sidebar-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            border: none;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-bs-theme="dark"] .card {
+            background-color: var(--dark-card);
+            color: var(--dark-text);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        [data-bs-theme="dark"] .card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 15px 20px;
+            font-weight: 600;
+            transition: background-color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .card-header {
+            background-color: var(--dark-card);
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        .status-badge {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            transition: all var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .profile-header {
+            background: linear-gradient(135deg, #2c3e50, #1a252f);
+        }
+        
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            object-fit: cover;
+            transition: all var(--transition-speed);
+        }
+        
+        .fc-event {
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 3px;
+            transition: transform 0.2s;
+        }
+        
+        .fc-event:hover {
+            transform: scale(1.02);
+        }
+        
+        .fc-day-today {
+            background-color: rgba(52, 152, 219, 0.1) !important;
+        }
+        
+        [data-bs-theme="dark"] .fc-day-today {
+            background-color: rgba(52, 152, 219, 0.2) !important;
+        }
+        
+        [data-bs-theme="dark"] .fc-theme-standard .fc-scrollgrid {
+            border-color: var(--dark-border);
+        }
+        
+        [data-bs-theme="dark"] .fc-theme-standard td, 
+        [data-bs-theme="dark"] .fc-theme-standard th {
+            border-color: var(--dark-border);
+        }
+        
+        [data-bs-theme="dark"] .fc .fc-daygrid-day-number,
+        [data-bs-theme="dark"] .fc .fc-col-header-cell-cushion {
+            color: var(--dark-text);
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 0;
+                padding-top: 60px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-top: 70px;
+            }
+            
+            .sidebar.active {
+                width: 250px;
+            }
+            
+            .main-content.active {
+                margin-left: 0;
+            }
+            
+            .profile-header {
+                text-align: center;
+            }
+            
+            .profile-img {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stat-card {
+                min-height: auto;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .current-time {
+                font-size: 1.5rem;
+            }
+        }
+        
+        .current-time {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            transition: color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .current-time {
+            color: #5dade2;
+        }
+        
+        .current-date {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            transition: color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .current-date {
+            color: #bdc3c7;
+        }
+        
+        .attendance-status {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .schedule-item {
+            border-left: 4px solid var(--secondary-color);
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s, background-color var(--transition-speed);
+        }
+        
+        .schedule-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-bs-theme="dark"] .schedule-item {
+            background-color: var(--dark-hover);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        [data-bs-theme="dark"] .schedule-item:hover {
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .schedule-time {
+            font-weight: 600;
+            color: var(--dark-color);
+            transition: color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .schedule-time {
+            color: #bdc3c7;
+        }
+        
+        .schedule-subject {
+            font-weight: 600;
+            color: var(--secondary-color);
+            transition: color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .schedule-subject {
+            color: #5dade2;
+        }
+        
+        .schedule-class {
+            color: var(--primary-color);
+            transition: color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .schedule-class {
+            color: #bdc3c7;
+        }
+        
+        .attendance-history-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            transition: all 0.2s;
+        }
+        
+        .attendance-history-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        [data-bs-theme="dark"] .attendance-history-item {
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        [data-bs-theme="dark"] .attendance-history-item:hover {
+            background-color: var(--dark-hover);
+        }
+        
+        .attendance-history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .attendance-date {
+            font-weight: 600;
+            color: var(--dark-color);
+            transition: color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .attendance-date {
+            color: #bdc3c7;
+        }
+        
+        .attendance-time {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            transition: color var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .attendance-time {
+            color: #95a5a6;
+        }
+        
+        .toggle-sidebar {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            z-index: 9999;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all var(--transition-speed);
+        }
+        
+        .toggle-sidebar:hover {
+            transform: scale(1.1);
+        }
+        
+        .school-logo {
+            height: 40px;
+            margin-right: 10px;
+            transition: all var(--transition-speed);
+        }
+        
+        /* Logo styling */
+        .logo-container {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+            transition: all var(--transition-speed);
+        }
+        
+        [data-bs-theme="dark"] .logo-container {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .logo-sidebar {
+            max-width: 180px;
+            transition: all var(--transition-speed);
+        }
+        
+        /* Dashboard cards */
+        .stat-card {
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            margin-bottom: 20px;
+            min-height: 120px;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card.blue {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .stat-card.green {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+        
+        .stat-card.red {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .stat-card.purple {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+        
+        .stat-icon {
+            position: absolute;
+            right: 20px;
+            bottom: 10px;
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Dark mode toggle */
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin-right: 15px;
+        }
+        
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+        }
+        
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+            height: 20px;
+            margin-bottom: 10px;
+        }
+        
+        [data-bs-theme="dark"] .skeleton {
+            background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+            background-size: 200% 100%;
+        }
+        
+        .skeleton.title {
+            height: 30px;
+            width: 50%;
+        }
+        
+        .skeleton.text {
+            height: 15px;
+        }
+        
+        .skeleton.text.short {
+            width: 60%;
+        }
+        
+        .skeleton.text.medium {
+            width: 80%;
+        }
+        
+        .skeleton.card {
+            height: 120px;
+        }
+        
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
+        /* Table styles for dark mode */
+        [data-bs-theme="dark"] .table {
+            color: var(--dark-text);
+        }
+        
+        [data-bs-theme="dark"] .table-striped>tbody>tr:nth-of-type(odd)>* {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--dark-text);
+        }
+        
+        [data-bs-theme="dark"] .table-hover>tbody>tr:hover>* {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--dark-text);
+        }
+        
+        [data-bs-theme="dark"] .table-light {
+            background-color: var(--dark-hover);
+            color: var(--dark-text);
+        }
+        
+        [data-bs-theme="dark"] .form-control,
+        [data-bs-theme="dark"] .form-select {
+            background-color: var(--dark-hover);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+        
+        [data-bs-theme="dark"] .form-control:focus,
+        [data-bs-theme="dark"] .form-select:focus {
+            background-color: var(--dark-hover);
+            color: var(--dark-text);
+            border-color: var(--secondary-color);
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* DataTables Styling */
+        [data-bs-theme="dark"] .dataTables_wrapper .dataTables_length, 
+        [data-bs-theme="dark"] .dataTables_wrapper .dataTables_filter, 
+        [data-bs-theme="dark"] .dataTables_wrapper .dataTables_info, 
+        [data-bs-theme="dark"] .dataTables_wrapper .dataTables_processing, 
+        [data-bs-theme="dark"] .dataTables_wrapper .dataTables_paginate {
+            color: var(--dark-text);
+        }
+        
+        [data-bs-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: var(--dark-text) !important;
+        }
+        
+        [data-bs-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--secondary-color);
+            color: white !important;
+            border-color: var(--secondary-color);
+        }
+        
+        [data-bs-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: rgba(52, 152, 219, 0.2);
+            color: white !important;
+            border-color: transparent;
+        }
+        
+        /* Notifications indicator */
+        .notification-indicator {
+            position: relative;
+        }
+        
+        .notification-indicator::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+        
+        /* Progress bar animation */
+        .progress .progress-bar {
+            transition: width 1s ease;
+            animation: progressAnimation 1s;
+        }
+        
+        @keyframes progressAnimation {
+            0% {
+                width: 0%;
+            }
+        }
+        
+        /* Badge animations */
+        .badge {
+            transition: all 0.3s;
+        }
+        
+        .badge:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Tooltips */
+        .custom-tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .custom-tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .custom-tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+            bottom: 120%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <span class="toggle-sidebar me-3">
+                <i class="fas fa-bars"></i>
+            </span>
+            <a class="navbar-brand ms-auto ms-lg-0" href="#">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMzNDk4ZGIiIHJ4PSIxMCIgcnk9IjEwIi8+PHRleHQgeD0iNTAiIHk9IjUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGFsaWdubWVudC1iYXNlbGluZT0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI+U01LIE4gMzwvdGV4dD48dGV4dCB4PSI1MCIgeT0iNzUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGZpbGw9IndoaXRlIj5LZWp1cnVhbiBNdWRhPC90ZXh0Pjwvc3ZnPg==" alt="SMK Logo" class="school-logo">
+                Sistem Absensi Guru
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="dropdown notification-indicator">
+                    <a class="text-white text-decoration-none px-2" href="#" role="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                        <li><h6 class="dropdown-header">Notifikasi</h6></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-info-circle text-primary me-2"></i>Absensi hari ini belum dilakukan</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-alt text-success me-2"></i>Rapat guru pada 10 April 2025</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center" href="#">Lihat semua notifikasi</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown ms-3">
+                    <a class="text-white text-decoration-none dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjE1IiByPSI4IiBmaWxsPSIjZWNmMGYxIi8+PHBhdGggZD0iTTQwLDQwSDIwSDBWMzhjMCwwLDEwLTcsMjAtN3MyMCw3LDIwLDdWNDB6IiBmaWxsPSIjZWNmMGYxIi8+PC9zdmc+" class="rounded-circle me-2" width="32" height="32" alt="User">
+                        <span>Budi Santoso</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn animate__faster" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#profil"><i class="fas fa-user me-2"></i>Profil</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Pengaturan</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Keluar</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCAxNTAgNzAiPjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iNzAiIGZpbGw9InRyYW5zcGFyZW50Ii8+PHRleHQgeD0iNzUiIHk9IjI1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+U01LIE4gMzwvdGV4dD48dGV4dCB4PSI3NSIgeT0iNTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPktlanVydWFuIE11ZGE8L3RleHQ+PC9zdmc+" alt="SMK N 3 Kejuruan Muda" class="logo-sidebar">
+        </div>
+        <a href="#dashboard" class="sidebar-link active" id="dashboard-link"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="#absensi" class="sidebar-link" id="absensi-link"><i class="fas fa-clipboard-check"></i> Absensi</a>
+        <a href="#jadwal-ajar" class="sidebar-link" id="jadwal-link"><i class="fas fa-calendar-alt"></i> Jadwal Ajar</a>
+        <a href="#profil" class="sidebar-link" id="profil-link"><i class="fas fa-user"></i> Profil</a>
+        <a href="#riwayat" class="sidebar-link" id="riwayat-link"><i class="fas fa-history"></i> Riwayat Absensi</a>
+        <a href="#" class="sidebar-link" id="logoutBtn2"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section">
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <h2 class="mb-4">Dashboard</h2>
+                    <div class="alert alert-info animate__animated animate__fadeIn">
+                        <i class="fas fa-info-circle me-2"></i> Selamat datang di Sistem Absensi Guru SMK N 3 Kejuruan Muda. Silahkan lakukan absensi sesuai dengan jadwal mengajar Anda.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card blue animate__animated animate__fadeInUp">
+                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Tingkat Kehadiran</div>
+                        <i class="fas fa-chart-line stat-icon"></i>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card green animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Total Kehadiran</div>
+                        <i class="fas fa-check-circle stat-icon"></i>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card red animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Ketidakhadiran</div>
+                        <i class="fas fa-times-circle stat-icon"></i>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card purple animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">Jam Mengajar</div>
+                        <i class="fas fa-clock stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card animate__animated animate__fadeIn" style="animation-delay: 0.4s;">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-calendar-day me-2"></i>Jadwal Hari Ini</span>
+                            <span class="badge bg-primary">Senin, 8 April 2025</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="todayScheduleLoading" class="skeleton-loading">
+                                <div class="skeleton title mb-3"></div>
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                                <div class="skeleton title mt-4 mb-3"></div>
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                            <div id="todayScheduleContent" class="d-none">
+                                <div class="schedule-item">
+                                    <div class="schedule-time">08:00 - 09:40</div>
+                                    <div class="schedule-subject">Pemrograman Web</div>
+                                    <div class="schedule-class">Kelas XI RPL 1</div>
+                                </div>
+                                <div class="schedule-item">
+                                    <div class="schedule-time">10:00 - 11:40</div>
+                                    <div class="schedule-subject">Basis Data</div>
+                                    <div class="schedule-class">Kelas X RPL 2</div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="#jadwal-ajar" class="btn btn-sm btn-outline-primary">Lihat Semua Jadwal</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card animate__animated animate__fadeIn" style="animation-delay: 0.5s;">
+                        <div class="card-header">
+                            <i class="fas fa-user-check me-2"></i>Absensi Cepat
+                        </div>
+                        <div class="card-body text-center py-4">
+                            <div id="absensiCepatLoading" class="skeleton-loading">
+                                <div class="skeleton" style="height: 45px; width: 200px; margin: 0 auto;"></div>
+                                <div class="skeleton" style="height: 25px; width: 250px; margin: 15px auto;"></div>
+                                <div class="skeleton" style="height: 45px; width: 180px; margin: 25px auto;"></div>
+                                <div class="skeleton" style="height: 30px; width: 220px; margin: 15px auto;"></div>
+                            </div>
+                            <div id="absensiCepatContent" class="d-none">
+                                <div class="current-time" id="current-time">08:00:00</div>
+                                <div class="current-date" id="current-date">Senin, 8 April 2025</div>
+                                <div class="mt-4">
+                                    <button class="btn btn-success btn-lg me-2 animate__animated animate__pulse animate__infinite" data-bs-toggle="modal" data-bs-target="#absensiModal">
+                                        <i class="fas fa-check-circle me-2"></i>Absen Sekarang
+                                    </button>
+                                </div>
+                                <div class="attendance-status mt-3">
+                                    Status Absensi: <span class="badge bg-warning">Belum Absen</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card animate__animated animate__fadeIn" style="animation-delay: 0.6s;">
+                        <div class="card-header">
+                            <i class="fas fa-history me-2"></i>Riwayat Absensi Terakhir
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="riwayatAbsensiLoading" class="skeleton-loading p-3">
+                                <div class="row mb-3">
+                                    <div class="col-9">
+                                        <div class="skeleton title"></div>
+                                        <div class="skeleton text short"></div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="skeleton" style="height: 25px; float: right; width: 70px;"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-9">
+                                        <div class="skeleton title"></div>
+                                        <div class="skeleton text short"></div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="skeleton" style="height: 25px; float: right; width: 70px;"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-9">
+                                        <div class="skeleton title"></div>
+                                        <div class="skeleton text short"></div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="skeleton" style="height: 25px; float: right; width: 70px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="riwayatAbsensiContent" class="d-none">
+                                <div class="attendance-history-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="attendance-date">Jumat, 5 April 2025</div>
+                                        <div class="attendance-time">Masuk: 07:55 - Keluar: 12:05</div>
+                                    </div>
+                                    <span class="badge bg-success">Hadir</span>
+                                </div>
+                                <div class="attendance-history-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="attendance-date">Kamis, 4 April 2025</div>
+                                        <div class="attendance-time">Masuk: 08:02 - Keluar: 12:00</div>
+                                    </div>
+                                    <span class="badge bg-success">Hadir</span>
+                                </div>
+                                <div class="attendance-history-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="attendance-date">Rabu, 3 April 2025</div>
+                                        <div class="attendance-time">Masuk: 07:50 - Keluar: 12:10</div>
+                                    </div>
+                                    <span class="badge bg-success">Hadir</span>
+                                </div>
+                                <div class="attendance-history-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="attendance-date">Selasa, 2 April 2025</div>
+                                        <div class="attendance-time">-</div>
+                                    </div>
+                                    <span class="badge bg-danger">Tidak Hadir</span>
+                                </div>
+                                <div class="attendance-history-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="attendance-date">Senin, 1 April 2025</div>
+                                        <div class="attendance-time">Masuk: 08:05 - Keluar: 11:55</div>
+                                    </div>
+                                    <span class="badge bg-success">Hadir</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Absensi Section -->
+        <div id="absensi" class="content-section" style="display: none;">
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <h2 class="mb-4">Absensi</h2>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card animate__animated animate__fadeIn">
+                        <div class="card-header">
+                            <i class="fas fa-clipboard-list me-2"></i>Formulir Absensi
+                        </div>
+                        <div class="card-body">
+                            <form id="absensiForm">
+                                <div class="mb-3">
+                                    <label for="tanggal" class="form-label">Tanggal</label>
+                                    <input type="date" class="form-control" id="tanggal" value="2025-04-08">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="jam" class="form-label">Jam</label>
+                                    <input type="time" class="form-control" id="jam" value="08:00">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status Kehadiran</label>
+                                    <select class="form-select" id="status">
+                                        <option value="hadir">Hadir</option>
+                                        <option value="sakit">Sakit</option>
+                                        <option value="izin">Izin</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="keterangan" class="form-label">Keterangan</label>
+                                    <textarea class="form-control" id="keterangan" rows="3" placeholder="Isikan keterangan jika diperlukan"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="jadwalMengajar" class="form-label">Jadwal Mengajar</label>
+                                    <select class="form-select" id="jadwalMengajar">
+                                        <option>Pemrograman Web - Kelas XI RPL 1 (08:00 - 09:40)</option>
+                                        <option>Basis Data - Kelas X RPL 2 (10:00 - 11:40)</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle me-2"></i>Kirim Absensi</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card h-100 animate__animated animate__fadeIn" style="animation-delay: 0.1s;">
+                        <div class="card-header">
+                            <i class="fas fa-info-circle me-2"></i>Informasi Absensi
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-primary">
+                                <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Perhatian!</h5>
+                                <p>Absensi dilakukan pada jam kerja 8.00 - 12.00 WIB sesuai dengan jadwal mengajar.</p>
+                                <hr>
+                                <p class="mb-0">Ketentuan Absensi:</p>
+                                <ul>
+                                    <li>Hadir: Melakukan absensi sesuai dengan jadwal mengajar</li>
+                                    <li>Sakit: Wajib melampirkan surat keterangan dokter</li>
+                                    <li>Izin: Wajib melampirkan surat izin dan disetujui oleh Kepala Sekolah</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title">Statistik Absensi Bulan Ini</h5>
+                                    <div class="progress mb-3" style="height: 25px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" id="hadir-progress">Hadir (0%)</div>
+                                    </div>
+                                    <div class="progress mb-3" style="height: 25px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" id="izin-progress">Izin (0%)</div>
+                                    </div>
+                                    <div class="progress mb-3" style="height: 25px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 0%;" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100" id="sakit-progress">Sakit (0%)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card animate__animated animate__fadeIn" style="animation-delay: 0.2s;">
+                        <div class="card-header d-flex justify-content-between">
+                            <span><i class="fas fa-list-alt me-2"></i>Riwayat Absensi Bulan Ini</span>
+                            <div>
+                                <select class="form-select form-select-sm">
+                                    <option>April 2025</option>
+                                    <option>Maret 2025</option>
+                                    <option>Februari 2025</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped" id="absensi-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Jadwal</th>
+                                            <th>Jam Masuk</th>
+                                            <th>Jam Keluar</th>
+                                            <th>Status</th>
+                                            <th>Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>8 April 2025</td>
+                                            <td>Pemrograman Web - XI RPL 1</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td><span class="badge bg-warning">Belum Absen</span></td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5 April 2025</td>
+                                            <td>Basis Data - X RPL 2</td>
+                                            <td>07:55</td>
+                                            <td>12:05</td>
+                                            <td><span class="badge bg-success">Hadir</span></td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4 April 2025</td>
+                                            <td>Pemrograman Web - XI RPL 1</td>
+                                            <td>08:02</td>
+                                            <td>12:00</td>
+                                            <td><span class="badge bg-success">Hadir</span></td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3 April 2025</td>
+                                            <td>Basis Data - X RPL 2</td>
+                                            <td>07:50</td>
+                                            <td>12:10</td>
+                                            <td><span class="badge bg-success">Hadir</span></td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2 April 2025</td>
+                                            <td>Pemrograman Web - XI RPL 1</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td><span class="badge bg-danger">Tidak Hadir</span></td>
+                                            <td>Sakit</td>
+                                        </tr>
+                                        <tr>
+                                            <td>1 April 2025</td>
+                                            <td>Basis Data - X RPL 2</td>
